@@ -4,7 +4,7 @@ Sonifier is a simple JavaScript library that converts a two-dimensional data int
 
 This library is part of an ongoing research project being conducted at the University of Washington, led by [Ather Sharif](https://athersharif.me).
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/athersharif/sonifier/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/sonifier.svg?style=flat)](https://www.npmjs.com/package/sonifier) [![Travis](https://travis-ci.org/athersharif/sonifier.svg?branch=main)](https://travis-ci.org/athersharif/sonifier)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/athersharif/sonifier/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/sonifier.svg?style=flat)](https://www.npmjs.com/package/sonifier) [![CircleCI](https://circleci.com/gh/athersharif/sonifier/tree/main.svg?style=svg)](https://circleci.com/gh/athersharif/sonifier/?branch=main)
 
 ## Installation
 
