@@ -13,6 +13,8 @@ exports.resetSonifier = exports["default"] = void 0;
 
 var _defaultsDeep = _interopRequireDefault(require("lodash/defaultsDeep"));
 
+var _getSynth = require("./getSynth");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -28,14 +30,23 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 var defaultSettings = {
-  note: 'C3',
+  soundType: 'OmniOscillator',
+  note: 'C4',
   oscillator: {
-    type: 'sawtooth',
+    sourceType: 'am',
+    baseType: 'square',
+    partialCount: 8,
     interval: 0.5
   },
   frequency: {
     minimum: 130,
     maximum: 650
+  },
+  envelope: {
+    attack: 0.1,
+    decay: 0.2,
+    sustain: 0.5,
+    release: 0.8
   },
   volume: -25
 };
@@ -45,7 +56,10 @@ var resetSonifier = function resetSonifier(Tone) {
   Tone.Transport.stop();
   Tone.Transport.clear();
   oscillations.forEach(function (osc) {
-    if (!osc.disposed) osc.dispose();
+    if (!osc.disposed) {
+      osc.dispose();
+      if (osc.unsync) osc.unsync();
+    }
   });
 };
 
@@ -53,6 +67,14 @@ exports.resetSonifier = resetSonifier;
 
 var toFrequency = function toFrequency(value, minimumDataValue, maximumDataValue, minimumFrequency, maximumFrequency) {
   return (value - minimumDataValue) * (maximumFrequency - minimumFrequency) / (maximumDataValue - minimumDataValue) + minimumFrequency;
+};
+
+var getOscillatorType = function getOscillatorType(settings) {
+  var _settings$oscillator = settings.oscillator,
+      baseType = _settings$oscillator.baseType,
+      sourceType = _settings$oscillator.sourceType,
+      partialCount = _settings$oscillator.partialCount;
+  return sourceType + baseType + partialCount;
 };
 
 var sonifier = function sonifier(Tone, data) {
@@ -71,16 +93,21 @@ var sonifier = function sonifier(Tone, data) {
   data.y.map(function (d) {
     return _get__("toFrequency")(d, minValue, maxValue, settings.frequency.minimum, settings.frequency.maximum);
   }).forEach(function (d) {
-    var osc = new Tone.OmniOscillator(settings.note, settings.oscillator.type).toDestination();
-    osc.frequency.value = d;
-    osc.volume.value = settings.volume;
+    var oscillatorType = _get__("getOscillatorType")(settings);
 
-    osc.onstop = function () {
-      return osc.dispose();
+    var options = {
+      envelope: settings.envelope,
+      frequency: d,
+      note: settings.note,
+      oscillatorType: oscillatorType,
+      start: start,
+      stop: stop,
+      volume: settings.volume
     };
 
-    osc.sync().start(start).stop(stop);
-    oscillations.push(osc);
+    var synth = _get__("getSynth")(Tone, settings.soundType, options);
+
+    oscillations.push(synth);
     start = stop;
     stop = stop + settings.oscillator.interval;
   });
@@ -209,6 +236,12 @@ function _get_original__(variableName) {
 
     case "toFrequency":
       return toFrequency;
+
+    case "getOscillatorType":
+      return getOscillatorType;
+
+    case "getSynth":
+      return _getSynth.getSynth;
 
     case "sonifier":
       return sonifier;

@@ -3,20 +3,31 @@
  */
 
 import defaultsDeep from 'lodash/defaultsDeep';
+import { getSynth } from './getSynth';
 
 /**
  * Default settings for the sonifier.
  * @memberOf sonifier
  */
 const defaultSettings = {
-  note: 'C3',
+  soundType: 'OmniOscillator',
+  note: 'C4',
   oscillator: {
-    type: 'sawtooth',
+    // https://github.com/Tonejs/Tone.js/blob/c313bc6/Tone/source/oscillator/OscillatorInterface.ts#L439
+    sourceType: 'am',
+    baseType: 'square',
+    partialCount: 8,
     interval: 0.5,
   },
   frequency: {
     minimum: 130,
     maximum: 650,
+  },
+  envelope: {
+    attack: 0.1,
+    decay: 0.2,
+    sustain: 0.5,
+    release: 0.8,
   },
   volume: -25,
 };
@@ -30,7 +41,10 @@ export const resetSonifier = (Tone, oscillations = []) => {
   Tone.Transport.clear();
 
   oscillations.forEach((osc) => {
-    if (!osc.disposed) osc.dispose();
+    if (!osc.disposed) {
+      osc.dispose();
+      if (osc.unsync) osc.unsync();
+    }
   });
 };
 
@@ -56,12 +70,25 @@ const toFrequency = (
   minimumFrequency;
 
 /**
+ * Constructs the oscillator type as per Tone.js library's specs
+ * @memberOf sonifier
+ * @param {Object} settings - The settings for the sonifier
+ * @returns {string} - The oscillator type for the Tone.js oscillator
+ */
+const getOscillatorType = (settings) => {
+  const { baseType, sourceType, partialCount } = settings.oscillator;
+
+  return sourceType + baseType + partialCount;
+};
+
+/**
  * Generates the sonified respoonse.
  * @memberOf sonifier
  * @param {Object} Tone - The instance from tonejs library.
  * @param {Object} data - The data from the viz.
  * @param {string[]} data.x - Values of the independent variable.
  * @param {string[]} data.y - Values of the dependent variable.
+ * @param {string[]} settings - Settings for the sonfiied response.
  * @returns {Object[]} - Oscillations in the sonified response.
  */
 const sonifier = (Tone, data, settings = {}) => {
@@ -86,16 +113,21 @@ const sonifier = (Tone, data, settings = {}) => {
       )
     )
     .forEach((d) => {
-      const osc = new Tone.OmniOscillator(
-        settings.note,
-        settings.oscillator.type
-      ).toDestination();
-      osc.frequency.value = d;
-      osc.volume.value = settings.volume;
-      osc.onstop = () => osc.dispose();
-      osc.sync().start(start).stop(stop);
+      const oscillatorType = getOscillatorType(settings);
 
-      oscillations.push(osc);
+      const options = {
+        envelope: settings.envelope,
+        frequency: d,
+        note: settings.note,
+        oscillatorType,
+        start,
+        stop,
+        volume: settings.volume,
+      };
+
+      const synth = getSynth(Tone, settings.soundType, options);
+
+      oscillations.push(synth);
       start = stop;
       stop = stop + settings.oscillator.interval;
     });
