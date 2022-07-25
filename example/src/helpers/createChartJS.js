@@ -24,7 +24,7 @@ const createChartJS = (options) => {
           label: startCase(yKey),
           data: mappedData,
           fill: true,
-          backgroundColor: fillColor,
+          backgroundColor: 'transparent',
           borderColor: fillColor,
         },
       ],

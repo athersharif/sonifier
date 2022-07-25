@@ -57,3 +57,13 @@ Pull requests are welcome and appreciated. Contributing guidelines can be found 
 ## License
 
 Licensed under MIT. Can be found [here](https://github.com/athersharif/sonifier/blob/master/LICENSE).
+
+## Citations
+
+Ather Sharif, Olivia H. Wang, Alida T. Muongchan, Katharina Reinecke, and Jacob O. Wobbrock. 2022. VoxLens: Making Online Data Visualizations Accessible with an Interactive JavaScript Plug-In. In Proceedings of the 2022 CHI Conference on Human Factors in Computing Systems (CHI '22). Association for Computing Machinery, New York, NY, USA, Article 478, 1–19.
+
+[PDF](https://athersharif.me/documents/chi-2022-voxlens.pdf) | [Presentation](https://www.youtube.com/watch?v=_ACIJafIRuU)
+
+Ather Sharif, Olivia H. Wang, and Alida T. Muongchan. 2022. "What Makes Sonification User-Friendly?" Exploring Usability and User-Friendliness of Sonified Responses. In The 24th International ACM SIGACCESS Conference on Computers and Accessibility (ASSETS '22). Association for Computing Machinery, New York, NY, USA. To appear.
+
+[PDF](https://athersharif.me/documents/assets-2022-sonification.pdf) | [Presentation]()

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as Tone from 'tone';
 import { createChartJS } from './helpers';
-import data from './data.json';
+import data from './data/increasingTrend.json';
 import sonifier, { resetSonifier } from '../../dist';
 
 import './Graph.css';
@@ -11,11 +11,11 @@ class Graph extends Component {
     super(props);
     this.settings = {
       fillColor: 'steelblue',
-      chartType: 'bar',
+      chartType: 'line',
       data,
-      title: 'Price by Car Brands',
-      xKey: 'car_brands',
-      yKey: 'price',
+      title: 'Vegetables Eaten By Ather Per Year',
+      xKey: 'year',
+      yKey: 'value',
     };
     this.data = {
       x: data.map((d) => d[this.settings.xKey]),
@@ -44,8 +44,11 @@ class Graph extends Component {
     resetSonifier(Tone, this.oscillations);
 
     const settings = {
+      soundType: 'OmniOscillator',
       oscillator: {
-        type: 'sine',
+        sourceType: 'am',
+        baseType: 'square',
+        partialCount: 8,
       },
     };
 
@@ -55,7 +58,7 @@ class Graph extends Component {
   render() {
     return (
       <div id="graph">
-        <h1>Visualization for Price by Car Brands</h1>
+        <h1>{this.settings.title}</h1>
         <canvas id="chart" tabIndex="0" role="img" />
         <button onClick={this.playSonification}>Play Sonification</button>
       </div>

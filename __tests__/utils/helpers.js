@@ -12,26 +12,42 @@ export const stubs = {
       stop: sinon.stub(),
       clear: sinon.stub(),
     },
-    OmniOscillator: (frequency, type) => ({
+    OmniOscillator: () => ({
       toDestination: () => ({
-        type,
-        frequency: { value: frequency },
-        volume: { value: null },
-        sync: function () {
-          return this;
-        },
+        dispose: stubs.tone.dispose,
+        frequency: {},
         start: function () {
           return this;
         },
-        stop: function () {
-          this.onstop();
-          return this;
-        },
-        onstop: () => {},
+        stop: () => {},
+        sync: () => {},
+        unsync: stubs.tone.unsync,
+        volume: {},
+      }),
+    }),
+    MonoSynth: () => ({
+      toDestination: () => ({
         dispose: stubs.tone.dispose,
+        frequency: {},
+        sync: () => {},
+        triggerAttackRelease: stubs.tone.triggerAttackRelease,
+        unsync: stubs.tone.unsync,
+        volume: {},
+      }),
+    }),
+    Envelope: () => ({
+      toDestination: () => ({
+        dispose: stubs.tone.dispose,
+        frequency: {},
+        sync: () => {},
+        triggerAttackRelease: stubs.tone.triggerAttackRelease,
+        unsync: stubs.tone.unsync,
+        volume: {},
       }),
     }),
     dispose: sinon.stub(),
+    triggerAttackRelease: sinon.stub(),
+    unsync: sinon.stub(),
   },
 };
 
